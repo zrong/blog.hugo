@@ -2,3 +2,7 @@ baseURL = "https://blog.zengrong.net/"
 languageCode = "zh-CN"
 title = "ZRONG's Blog"
 theme = "maupassant"
+# uglyurls = true
+
+# Ignore the WARNING when build site: found no layout file for "HTML" for "section"
+disableKinds = ['section']
