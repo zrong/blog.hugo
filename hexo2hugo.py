@@ -14,10 +14,10 @@ pwddir = Path(__file__).parent.resolve()
 hexo_source = pwddir.parent.joinpath('blog/source/')
 hexo_posts = pwddir.parent.joinpath('blog/source/_posts')
 hugo_posts = pwddir.joinpath('content/post')
-hugo_content = pwddir.joinpath('content')
+hugo_articles = pwddir.joinpath('content/article')
 
 
-def check_post(f):
+def read_content(f):
     front_matter = []
     body = []
     with f.open() as pf:
@@ -56,18 +56,32 @@ def mege_content(p, type_):
     tags = ofm.get('tags')
     nicename = ofm.get('nicename')
     postid = ofm.get('postid')
+    slug = str(nicename) if nicename else str(postid)
     categories = ofm.get('categories')
     toc = p.get('toc', False)
+    aliases = None
+    url = None
+
+    if type_ == 'post':
+        aliases = ['/post/{0}.html'.format(postid)],
+    if type_ == 'article':
+        url = '/{0}/'.format(slug)
+
     nfm = {
         'title': ofm['title'],
         'postid': int(postid),
-        'aliases': ['/post/{0}.html'.format(ofm['postid'])],
         'date': dt,
         'isCJKLanguage': True,
         'toc': toc,
         'type': type_,
+        'slug': slug,
     }
-    nfm['slug'] = str(nicename) if nicename else str(postid)
+
+    if aliases:
+        nfm['aliases'] = aliases
+    if url:
+        nfm['url'] = url
+
     if categories is not None:
         nfm['categories'] = [categories]
     if tags is not None:
@@ -77,6 +91,7 @@ def mege_content(p, type_):
         nfm['lastmod'] = upt
     if ofm.get('attachments'):
         nfm['attachments'] = ofm['attachments']
+    
     front_matter_toml = toml.dumps(nfm)
     return '+++\n%s+++\n\n%s' % (front_matter_toml, p['body'])
     
@@ -89,7 +104,7 @@ def build_posts():
             continue
         print('perform ', i, p)
         f = hexo_posts.joinpath(p)
-        post_data = check_post(f)
+        post_data = read_content(f)
         try:
             s = mege_content(post_data, 'post')
             hugef = hugo_posts.joinpath(p)
@@ -109,11 +124,11 @@ def build_pages():
         if p.startswith('.') or p.startswith('_') or p in ('search', 'uploads', 'tag', 'category', 'link'):
             continue
         page_file = hexo_source.joinpath(p, 'index.md')
-        page_data = check_post(page_file)
+        page_data = read_content(page_file)
         print('perform ', i, page_file)
         try:
-            s = mege_content(page_data, 'page')
-            hugef = hugo_content.joinpath(p+'.md')
+            s = mege_content(page_data, 'article')
+            hugef = hugo_articles.joinpath(p+'.md')
             hugef.write_text(s, encoding='utf8')
         except Exception as e:
             error_pages.append({'name': p, 'error': e})
