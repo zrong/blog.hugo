@@ -1,10 +1,14 @@
 #!/usr/bin/env python3
-#===========================
-# move hexo blog to hugo
-#===========================
+#==================================
+# move zorng's hexo blog to hugo
+#
+# 2019-06-11 init
+# 2019-06-20 build flash content
+#==================================
 
 from pathlib import Path
 import os
+import re
 import yaml
 import toml
 from datetime import datetime, timezone, timedelta
@@ -15,6 +19,91 @@ hexo_source = pwddir.parent.joinpath('blog/source/')
 hexo_posts = pwddir.parent.joinpath('blog/source/_posts')
 hugo_posts = pwddir.joinpath('content/post')
 hugo_articles = pwddir.joinpath('content/article')
+
+
+def replace_body_flash(body_text):
+    """ dispose the {% flash %} xxx {% endflash %} 
+    in multiline
+    """
+    re_flash = re.compile(r'{% flash %\}(.*?)\{% endflash %\}', re.DOTALL)
+    match_list = re_flash.finditer(body_text)
+    repl_list = []
+    for matchobj in match_list:
+        flash_params = matchobj.group(1).strip()
+        # print('flash_params', flash_params)
+        lines = flash_params.split('\n')
+        flash_pobj = {}
+        for line in lines:
+            # print('line', line)
+            line_list = line.strip().split(':')
+            key = line_list[0].strip()
+            value = line_list[1].strip()
+            if key == 'useexpressinstall' or key == 'menu' or key == 'fversion':
+                value = value.replace("'", '').replace('"', '')
+            elif key == 'width' or key == 'height':
+                value = value.replace("'", '').replace('"', '')
+                value = int(value)
+            else:
+                value = str(value)
+            flash_pobj[key] = value
+        new_param_line = ['{0}="{1}"'.format(k, v) for k, v in flash_pobj.items()]
+        repl_list.append('{{{{< flash {0} >}}}}'.format(' '.join(new_param_line)))
+    # print(repl_list)
+    for repl in repl_list:
+        body_text = re_flash.sub(repl, body_text, 1)
+        # print('flash_params ', flash_params)
+        # print('flash_pobj ', flash_pobj)
+    # print(body_text)
+    return body_text
+
+
+def replace_body_download(body_text):
+    """ dispose the
+    {% download %}
+    id:
+        - 1
+        - 2
+    {% enddownload %} 
+    in multiline
+    """
+    re_flash = re.compile(r'{% download %\}(.*?)\{% enddownload %\}', re.DOTALL)
+    match_list = re_flash.finditer(body_text)
+    repl_list = []
+    for matchobj in match_list:
+        dl_params = matchobj.group(1).strip()
+        lines = dl_params.split('\n')
+        dl_ids = []
+        for line in lines:
+            print('line', line)
+            if line.startswith('id'):
+                continue
+            lead = line.find('-')
+            if lead == -1:
+                continue
+            value = line[lead+1:].strip().replace("'", '').replace('"', '')
+            dl_ids.append(value)
+        repl_list.append('{{{{< download {0} >}}}}'.format(' '.join(dl_ids)))
+    # print(repl_list)
+    for repl in repl_list:
+        # print(body_text)
+        body_text = re_flash.sub(repl, body_text, 1)
+    return body_text
+
+
+def replace_body_alert(body_text):
+    return body_text
+
+
+def replace_body_label(body_text):
+    return body_text
+
+
+def replace_bodies(body_text):
+    body_text = replace_body_flash(body_text)
+    body_text = replace_body_download(body_text)
+    body_text = replace_body_alert(body_text)
+    body_text = replace_body_label(body_text)
+    return body_text
 
 
 def read_content(f):
@@ -36,9 +125,10 @@ def read_content(f):
                 else:
                     body.append(line)
             line = pf.readline()
+    body_text = replace_bodies(''.join(body))
     return {
         'front_matter': yaml.load(''.join(front_matter), Loader=yaml.SafeLoader),
-        'body': ''.join(body)
+        'body': body_text
     }
 
 
@@ -96,19 +186,27 @@ def mege_content(p, type_):
     return '+++\n%s+++\n\n%s' % (front_matter_toml, p['body'])
     
 
+def build_post(p):
+    """ build a post 
+    """
+    f = hexo_posts.joinpath(p)
+    post_data = read_content(f)
+    s = mege_content(post_data, 'post')
+    hugef = hugo_posts.joinpath(p)
+    hugef.write_text(s, encoding='utf8')
+
+
 def build_posts():
+    """ build all posts in hexo/source/_posts
+    """
     i = 0
     error_posts = []
     for p in os.listdir(hexo_posts):
         if not p.endswith('.md'):
             continue
         print('perform ', i, p)
-        f = hexo_posts.joinpath(p)
-        post_data = read_content(f)
         try:
-            s = mege_content(post_data, 'post')
-            hugef = hugo_posts.joinpath(p)
-            hugef.write_text(s, encoding='utf8')
+            build_post(p)
         except Exception as e:
             error_posts.append({'name': p, 'error': e})
             print('%s error %s' %(p, e))
@@ -137,5 +235,6 @@ def build_pages():
         i += 1
     print(len(error_pages))
 
-# build_posts()
-build_pages()
+
+if __name__ == '__main__':
+    build_post('437.md')
