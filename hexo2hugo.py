@@ -153,7 +153,7 @@ def mege_content(p, type_):
     url = None
 
     if type_ == 'post':
-        aliases = ['/post/{0}.html'.format(postid)],
+        aliases = ['/post/{0}.html'.format(postid)]
     if type_ == 'article':
         url = '/{0}/'.format(slug)
 
@@ -237,4 +237,4 @@ def build_pages():
 
 
 if __name__ == '__main__':
-    build_post('437.md')
+    build_post('1097.md')
