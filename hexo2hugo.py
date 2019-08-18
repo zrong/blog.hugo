@@ -90,11 +90,33 @@ def replace_body_download(body_text):
     return body_text
 
 
-def replace_body_alert(body_text):
+def replace_body_label(body_text):
+    """ dispose the shortcode
+    {% label 'text' info/danger/warning/success %}
+    """
+    re_label = re.compile(r'\{% label +\'(.*?)\' +(\w+) +%\}')
+    match_list = re_label.finditer(body_text)
+    repl_list = []
+    for matchobj in match_list:
+        label_name = matchobj.group(1)
+        label_color = matchobj.group(2)
+        repl_list.append('{{{{< label {0} {1} >}}}}'.format(label_name, label_color))
+    for repl in repl_list:
+        # print(body_text)
+        body_text = re_label.sub(repl, body_text, 1)
     return body_text
 
 
-def replace_body_label(body_text):
+def replace_body_alert(body_text):
+    re_alert = re.compile(r'\{% alert +(\w+) +%\}(.*?)\{% endalert %\}', re.DOTALL)
+    match_list = re_alert.finditer(body_text)
+    repl_list = []
+    for matchobj in match_list:
+        alert_color = matchobj.group(1)
+        alert_text = matchobj.group(2).strip()
+        repl_list.append('{{{{% alert {0} %}}}}\n{1}\n{{{{% /alert %}}}}'.format(alert_color, alert_text))
+    for repl in repl_list:
+        body_text = re_alert.sub(repl, body_text, 1)
     return body_text
 
 
@@ -237,4 +259,6 @@ def build_pages():
 
 
 if __name__ == '__main__':
-    build_post('1097.md')
+    # build_post('2631.md')
+    # build_posts()
+    build_pages()
