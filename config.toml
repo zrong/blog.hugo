@@ -6,3 +6,7 @@ theme = "maupassant"
 
 # Ignore the WARNING when build site: found no layout file for "HTML" for "section"
 disableKinds = ['section']
+
+[taxonomies]
+  category = "category"
+  tag = "tag"
