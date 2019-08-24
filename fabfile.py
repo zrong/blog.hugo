@@ -5,21 +5,21 @@ import sys
 from fabric import task, Connection
 from invoke.exceptions import Exit
 
+
 logger = logging.Logger('fabric', level=logging.DEBUG)
 logger.addHandler(logging.StreamHandler(sys.stdout))
 
 
 class Tmux(object):
-    """Tmux helper for fabric"""
-    def __init__(self, session_name, run_cmd=run):
+    """Tmux helper for fabric 2"""
+    def __init__(self, runner, session_name='default'):
         self.session_name = session_name
-        self.run_cmd = run_cmd
+        self.run_cmd = runner.run
 
         self.create_session()
 
     def create_session(self):
-        with settings(warn_only=True):
-            test = self.run_cmd('tmux has-session -t %s' % self.session_name)
+        test = self.run_cmd('tmux has-session -t %s' % self.session_name, warn=True)
 
         if test.failed:
             self.run_cmd('tmux new-session -d -s %s' % self.session_name)
@@ -42,10 +42,9 @@ class Tmux(object):
         self.run_cmd('tmux new-window -t %s -n %s' % (self.session_name, name))
 
     def find_window(self, name):
-        with settings(warn_only=True):
-            test = self.run_cmd('tmux list-windows -t %s | grep \'%s\'' % (self.session_name, name))
+        test = self.run_cmd('tmux list-windows -t %s | grep \'%s\'' % (self.session_name, name), warn=True)
 
-        return not test.failed
+        return test.ok
 
     def rename_window(self, new_name, old_name=None):
         if old_name is None:
@@ -56,7 +55,7 @@ class Tmux(object):
     def wait_for(self, signal_name):
         self.run_cmd('tmux wait-for %s' % signal_name)
 
-    def run_singleton(self, command, orig_name):
+    def run_singleton(self, command, orig_name, wait=True):
         run_name = "run/%s" % orig_name
         done_name = "done/%s" % orig_name
 
@@ -81,19 +80,22 @@ class Tmux(object):
             command, rename_window_cmd, signal_cmd)
         self.command(expanded_command, run_name)
 
-        self.wait_for(run_name)
+        if wait:
+            self.wait_for(run_name)
 
 
 @task
-def test():
-    t = Tmux('session', run_cmd=local)
+def test_tmux(c):
+    t = Tmux('session', runner=c)
     t.run_singleton('sleep 10', 'sleeping')
+
 
 SITE_WEBROOT = '/srv/www/hugo.zengrong.net'
 GIT_URI = 'git@github.com:zrong/blog.hugo.git'
 
+
 @task
-def test(c):
+def deploy(c):
     if not isinstance(c, Connection):
         raise Exit('Use -H to provide a host!')
     logger.warning('conn: %s', c)
@@ -101,9 +103,15 @@ def test(c):
     hugo_cache_dir = '{0}/hugo_cache'.format(git_dir)
     r = c.run('test -e ' + git_dir, warn=True)
     logger.warning('r: %s', r.command)
+    t = Tmux(c, 'blog')
     if r.ok:
-        c.run('git --git-dir={0}/.git --work-tree={0} reset --hard'.format(git_dir), warn=False)
-        c.run('git --git-dir={0}/.git --work-tree={0} pull origin master'.format(git_dir) , warn=False)
-        c.run('tmux -c hugo --cacheDir {0}'.format(hugo_cache_dir))
+        cmd_list = [
+            'git -C {0} reset --hard'.format(git_dir),
+            'git -C {0} pull origin master'.format(git_dir),
+            'git -C {0} submodule update'.format(git_dir),
+            'cd {0}'.format(git_dir),
+            'hugo --cacheDir {0} -d {1}'.format(hugo_cache_dir, SITE_WEBROOT)
+        ]
+        t.run_singleton(' && '.join(cmd_list), 'hugo', wait=False)
     else:
-        c.run('git clone {0} $HOME/blog.hugo'.format(GIT_URI))
+        t.run_singleton('git clone --recursive {0} $HOME/blog.hugo'.format(GIT_URI), 'git', wait=False)
