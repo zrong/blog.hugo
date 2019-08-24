@@ -195,9 +195,11 @@ def mege_content(p, type_):
         nfm['url'] = url
 
     if categories is not None:
-        nfm['categories'] = [categories]
+        # nfm['categories'] = [categories]
+        nfm['category'] = [categories]
     if tags is not None:
-        nfm['tags'] = tags
+        # nfm['tag'] = tags
+        nfm['tag'] = tags
     if upt is not None:
         upt = datetime(upt.year, upt.month, upt.day, upt.hour, upt.minute, upt.second, tzinfo=tzinfo)
         nfm['lastmod'] = upt
@@ -260,5 +262,5 @@ def build_pages():
 
 if __name__ == '__main__':
     # build_post('2631.md')
-    # build_posts()
+    build_posts()
     build_pages()
