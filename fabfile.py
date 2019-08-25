@@ -90,7 +90,7 @@ def test_tmux(c):
     t.run_singleton('sleep 10', 'sleeping')
 
 
-SITE_WEBROOT = '/srv/www/hugo.zengrong.net'
+SITE_WEBROOT = '/srv/www/blog.zengrong.net'
 GIT_URI = 'git@github.com:zrong/blog.hugo.git'
 
 
