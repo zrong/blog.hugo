@@ -36,14 +36,14 @@ comment = true
     weight = 3
 
   [[menu.main]]
-    identifier = "archives"
+    identifier = "archive"
     name = "归档"
-    url = "/archives/"
+    url = "/archive/"
     weight = 3
 
   [[menu.main]]
     identifier = "search"
-    name = "Google 搜索"
+    name = "Google站内搜索"
     url = "/search/"
     weight = 4
 
