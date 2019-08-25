@@ -194,12 +194,21 @@ def mege_content(p, type_):
     if url:
         nfm['url'] = url
 
+    # use singular, not plural
+    # so write follows in config.toml of hugo project
+    """
+    [taxonomies]
+        category = "category"
+        tag = "tag"
+    """
     if categories is not None:
         # nfm['categories'] = [categories]
         nfm['category'] = [categories]
     if tags is not None:
+        # use singular, not plural
         # nfm['tag'] = tags
         nfm['tag'] = tags
+
     if upt is not None:
         upt = datetime(upt.year, upt.month, upt.day, upt.hour, upt.minute, upt.second, tzinfo=tzinfo)
         nfm['lastmod'] = upt
