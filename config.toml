@@ -59,4 +59,4 @@ comment = true
 
 [params.isso]
     enable = true
-    host = "hugo.zengrong.net/isso"
+    host = "blog.zengrong.net/isso"
