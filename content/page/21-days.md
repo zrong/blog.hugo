@@ -4,7 +4,7 @@ postid = 1526
 date = 2012-02-14T21:41:57+08:00
 isCJKLanguage = true
 toc = false
-type = "article"
+type = "page"
 slug = "21-days"
 url = "/21-days/"
 +++

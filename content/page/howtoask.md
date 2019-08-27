@@ -4,7 +4,7 @@ postid = 17
 date = 2005-10-08T11:20:04+08:00
 isCJKLanguage = true
 toc = false
-type = "article"
+type = "page"
 slug = "howtoask"
 url = "/howtoask/"
 +++

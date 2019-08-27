@@ -4,7 +4,7 @@ postid = 114
 date = 2006-03-07T23:41:31+08:00
 isCJKLanguage = true
 toc = false
-type = "article"
+type = "page"
 slug = "wordpressfavorite"
 url = "/wordpressfavorite/"
 +++

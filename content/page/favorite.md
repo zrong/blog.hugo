@@ -4,7 +4,7 @@ postid = 2389
 date = 2015-11-15T11:32:04+08:00
 isCJKLanguage = true
 toc = false
-type = "article"
+type = "page"
 slug = "favorite"
 url = "/favorite/"
 +++

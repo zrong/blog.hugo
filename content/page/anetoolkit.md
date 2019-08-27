@@ -4,7 +4,7 @@ postid = 1626
 date = 2012-06-07T19:19:45+08:00
 isCJKLanguage = true
 toc = false
-type = "article"
+type = "page"
 slug = "anetoolkit"
 url = "/anetoolkit/"
 +++

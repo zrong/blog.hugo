@@ -4,7 +4,7 @@ postid = 703
 date = 2009-04-30T17:16:53+08:00
 isCJKLanguage = true
 toc = false
-type = "article"
+type = "page"
 slug = "linux-software"
 url = "/linux-software/"
 +++

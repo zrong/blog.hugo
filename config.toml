@@ -18,12 +18,6 @@ comment = true
 
 [menu]
   [[menu.main]]
-    identifier = "link"
-    name = "友情链接"
-    url = "/link/"
-    weight = 2
-
-  [[menu.main]]
     identifier = "category"
     name = "分类"
     url = "/category/"
@@ -40,6 +34,12 @@ comment = true
     name = "归档"
     url = "/archive/"
     weight = 3
+
+  [[menu.main]]
+    identifier = "link"
+    name = "友情链接"
+    url = "/link/"
+    weight = 2
 
   [[menu.main]]
     identifier = "search"

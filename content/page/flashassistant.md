@@ -4,7 +4,7 @@ postid = 48
 date = 2005-11-02T10:27:07+08:00
 isCJKLanguage = true
 toc = false
-type = "article"
+type = "page"
 slug = "flashassistant"
 url = "/flashassistant/"
 +++

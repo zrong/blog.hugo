@@ -4,7 +4,7 @@ postid = 2321
 date = 2015-06-12T09:40:22+08:00
 isCJKLanguage = true
 toc = false
-type = "article"
+type = "page"
 slug = "wpcmd"
 url = "/wpcmd/"
 +++

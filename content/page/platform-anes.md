@@ -4,7 +4,7 @@ postid = 1906
 date = 2013-08-22T23:49:29+08:00
 isCJKLanguage = true
 toc = false
-type = "article"
+type = "page"
 slug = "platform-anes"
 url = "/platform-anes/"
 +++
