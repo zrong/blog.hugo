@@ -54,8 +54,8 @@ comment = true
   description = "曾嵘的博客，乱七八糟的胡扯IT互联网，游戏，团队管理，创业以及各种有趣的东西。"
 
 [params.cc]
-    name = "知识共享署名-非商业性使用-禁止演绎 4.0 国际许可协议"
-    link = "https://creativecommons.org/licenses/by-nc-nd/4.0/"
+    name = "署名-非商业性使用-相同方式共享 4.0 国际 (CC BY-NC-SA 4.0)"
+    link = "https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh"
 
 [params.isso]
     enable = true

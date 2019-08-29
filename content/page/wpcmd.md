@@ -3,16 +3,14 @@ title = "WPCMD"
 postid = 2321
 date = 2015-06-12T09:40:22+08:00
 isCJKLanguage = true
-toc = false
+toc = true
 type = "page"
 slug = "wpcmd"
 url = "/wpcmd/"
 +++
 
 
-[TOC]
-
-我 2003 年开始写博客，现在的博客 [zengrong.net][2] 从2005 年起开始更新，一直没有中断。虽然 WordPress 的编辑功能越来越强大，而且也有大量的博客写作工具，但我都用不习惯。我总希望用一种更方便更简单（更适合程序员）的方式来管理博客。
+我 2003 年开始写博客，经历过一次数据丢失，现在的博客 [blog.zengrong.net][2] 从2005 年起开始更新，一直没有中断。虽然 WordPress 的编辑功能越来越强大，而且也有大量的博客写作工具，但我都用不习惯。我总希望用一种更方便更简单（更适合程序员）的方式来管理博客。
 
 2014 年的时候我考虑过 [博客静态化][5]，但现有的博客静态化工具不太符合我的要求，因此我准备自己造个轮子。造轮子的工程未免复杂，为了满足在轮子诞生之前的更新欲望，[WPCMD][1] 诞生了。
 
@@ -591,7 +589,7 @@ util 是一些批量处理博客的小工具，目前仅有 `-r , --readme` 这�
 （全文完）
 
 [1]: https://github.com/zrong/wpcmd
-[2]: http://zengrong.net
+[2]: https://blog.zengrong.net
 [3]: https://blog.zengrong.net/post/2374.html
 [4]: https://github.com/zrong/blog
 [5]: https://blog.zengrong.net/post/2187.html
